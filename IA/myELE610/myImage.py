@@ -67,8 +67,9 @@ class imageContainer:
     def convertToGrayscale(self):
         self.cv2image = cv2.cvtColor(self.cv2image, cv2.COLOR_BGR2GRAY)
     
-    def show_histogram(self):
-        pass
+    def getHistogram(self):
+        hist = cv2.calcHist([self.cv2image], [0], None, [256], [0,256])
+        return hist
     
     def reset(self):
         self.cv2image = cv2.imread(self.filename)
