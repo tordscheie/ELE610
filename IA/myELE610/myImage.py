@@ -4,85 +4,74 @@ import numpy as np
 
 class imageContainer:
     def __init__(self, file_name):
+        self.filename = file_name
         self.cv2image = cv2.imread(file_name)
-        self.rgb = cv2.cvtColor(self.cv2image, cv2.COLOR_BGR2RGB)
-        self.gray = cv2.cvtColor(self.cv2image, cv2.COLOR_BGR2GRAY)
-        self.qimage = None
-        self.pixmap = None
-
-        self.pixmapCreate()
-        self.qimageCreate()
       
-    def pixmapCreate(self):
+    def getPixmap(self):
+        img = cv2.cvtColor(self.cv2image, cv2.COLOR_BGR2RGB)
         qimage = None
-        if len(self.cv2image) == 2:
+        if len(img.shape) == 2:
             qimage = QImage(
-            self.cv2image.data,
-            self.cv2image.shape[1],  # width
-            self.cv2image.shape[0],  # height
-            self.cv2image.strides[0],
+            img.data,
+            img.shape[1],  # width
+            img.shape[0],  # height
+            img.strides[0],
             QImage.Format.Format_Grayscale8
         ) 
         else:
-            height, width, channels = self.cv2image.shape
+            height, width, channels = img.shape
             bytes_per_line = channels*width
             qimage = QImage(
-                self.cv2image.data,
+                img.data,
                 width,
                 height,
                 bytes_per_line,
                 QImage.Format.Format_RGB888
             )
-        self.pixmap = QPixmap.fromImage(qimage)
+        return QPixmap.fromImage(qimage)
 
-    def qimageCreate(self):
+    def getQimage(self):
+        img = self.cv2image
         qimage = None
-        if len(self.cv2image) == 2:
+        if len(img.shape) == 2:
             qimage = QImage(
-            self.cv2image.data,
-            self.cv2image.shape[1],  # width
-            self.cv2image.shape[0],  # height
-            self.cv2image.strides[0],
+            img.data,
+            img.shape[1],  # width
+            img.shape[0],  # height
+            img.strides[0],
             QImage.Format.Format_Grayscale8
         ) 
         else:
-            height, width, channels = self.cv2image.shape
+            height, width, channels = img.shape
             bytes_per_line = channels*width
             qimage = QImage(
-                self.cv2image.data,
+                img.data,
                 width,
                 height,
                 bytes_per_line,
                 QImage.Format.Format_RGB888
             )
-        self.qimage = qimage
+        return qimage
+    
     def printImageInfo(self):
         """Print some general (debug) information for the program and the image.
         Mainly for debug purposes.
         """
-        img = self.qimage
+        img = self.getQimage()
         # Size
         print("Width:", img.width())
         print("Height:", img.height())
         # Image rerpresentation
         print(img.format())
 
-    def setGrayImage(self):
-        qimage = None
-        qimage = QImage(
-            self.gray.data,
-            self.gray.shape[1],  # width
-            self.gray.shape[0],  # height
-            self.gray.strides[0],
-            QImage.Format.Format_Grayscale8
-        ) 
-        self.pixmap = QPixmap.fromImage(qimage)
-        self.qimage = qimage
+    def convertToGrayscale(self):
+        self.cv2image = cv2.cvtColor(self.cv2image, cv2.COLOR_BGR2GRAY)
     
-    def setNormal(self):
-        self.qimageCreate()
-        self.pixmapCreate()
-
+    def show_histogram(self):
+        pass
+    
+    def reset(self):
+        self.cv2image = cv2.imread(self.filename)
 
 
 

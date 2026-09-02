@@ -23,6 +23,9 @@ def myMenuBar(self: QMainWindow):
     grayscale_action = QAction("Show Grayscale", self)
     grayscale_action.triggered.connect(self.convert_to_grayscale)
 
+    histogram_action = QAction("Show Histogram", self)
+    histogram_action.triggered.connect(self.show_histogram)
+
     file_menu.addAction(open_action)
     file_menu.addAction(exit_action)
 

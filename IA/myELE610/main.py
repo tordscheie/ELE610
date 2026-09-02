@@ -20,13 +20,12 @@ class MainWindow(QMainWindow):
         self.canvas = Canvas()
         self.setCentralWidget(self.canvas)
         self.img = None
-        
-
         self.setup_ui()
 
 
     def setup_ui(self):
         myMenuBar(self)
+       
         
     def open_image(self):
         file_name, _ = QFileDialog.getOpenFileName (
@@ -37,7 +36,7 @@ class MainWindow(QMainWindow):
         )
         if file_name:
             self.img = imageContainer(file_name=file_name)
-            self.canvas.set_image(self.img.pixmap)
+            self.canvas.set_image(self.img.getPixmap())
 
     
    
@@ -46,12 +45,12 @@ class MainWindow(QMainWindow):
         self.img.printImageInfo()
 
     def convert_to_grayscale(self):
-        self.img.setGrayImage()
-        self.canvas.set_image(self.img.pixmap)
+        self.img.convertToGrayscale()
+        self.canvas.set_image(self.img.getPixmap())
 
     def reset(self):
-        self.img.setNormal()
-        self.canvas.set_image(self.img.pixmap)
+        self.img.reset()
+        self.canvas.set_image(self.img.getPixmap())
 
 def startup():
     app = QApplication(sys.argv)
