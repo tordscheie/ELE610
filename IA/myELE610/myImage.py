@@ -3,7 +3,7 @@ import cv2
 import numpy as np
 
 class imageContainer:
-    def __init__(self, file_name):
+    def __init__(self, file_name='./pictures/demo.jpg'):
         self.filename = file_name
         self.cv2image = cv2.imread(file_name)
       
