@@ -22,7 +22,7 @@ class MainWindow(QMainWindow):
         self.img = imageContainer()
 
         self.canvas = Canvas()
-        self.canvas.update_image(self.img.getPixmap())
+        self.canvas.update_image(self.img.getPixmap(self.img.getQimage()))
         self.histogram = Histogram(self.img)
 
         self.stack = QStackedWidget()
@@ -48,21 +48,21 @@ class MainWindow(QMainWindow):
         )
         if file_name:
             self.img = imageContainer(file_name=file_name)
-            self.canvas.update_image(self.img.getPixmap())
+            self.canvas.update_image(self.img.getPixmap(self.img.getQimage()))
 
     def print_image_info(self):
         self.img.printImageInfo()
 
     def convert_to_grayscale(self):
         self.img.convertToGrayscale()
-        self.canvas.update_image(self.img.getPixmap())
+        self.canvas.update_image(self.img.getPixmap(self.img.getQimage()))
 
     def show_histogram(self):
         pass
 
     def reset(self):
         self.img.reset()
-        self.canvas.update_image(self.img.getPixmap())
+        self.canvas.update_image(self.img.getPixmap(self.img.getQimage()))
 
 def startup():
     app = QApplication(sys.argv)

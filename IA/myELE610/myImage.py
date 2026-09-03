@@ -7,45 +7,25 @@ class imageContainer:
         self.filename = file_name
         self.cv2image = cv2.imread(file_name)
       
-    def getPixmap(self):
+    def getPixmap(self, qimage:QImage):
         img = cv2.cvtColor(self.cv2image, cv2.COLOR_BGR2RGB)
-        qimage = None
-        if len(img.shape) == 2:
-            qimage = QImage(
-            img.data,
-            img.shape[1],  # width
-            img.shape[0],  # height
-            img.strides[0],
-            QImage.Format.Format_Grayscale8
-        ) 
-        else:
-            height, width, channels = img.shape
-            bytes_per_line = channels*width
-            qimage = QImage(
-                img.data,
-                width,
-                height,
-                bytes_per_line,
-                QImage.Format.Format_RGB888
-            )
         return QPixmap.fromImage(qimage)
 
     def getQimage(self):
-        img = self.cv2image
-        qimage = None
-        if len(img.shape) == 2:
+        if len(self.cv2image.shape) == 2:
             qimage = QImage(
-            img.data,
-            img.shape[1],  # width
-            img.shape[0],  # height
-            img.strides[0],
+            self.cv2image.data.tobytes(),
+            self.cv2image.shape[1],  # width
+            self.cv2image.shape[0],  # height
+            self.cv2image.strides[0],
             QImage.Format.Format_Grayscale8
         ) 
         else:
+            img = cv2.cvtColor(self.cv2image, cv2.COLOR_BGR2RGB)
             height, width, channels = img.shape
             bytes_per_line = channels*width
             qimage = QImage(
-                img.data,
+                img.data.tobytes(),
                 width,
                 height,
                 bytes_per_line,
