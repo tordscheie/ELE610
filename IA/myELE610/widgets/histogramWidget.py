@@ -1,4 +1,6 @@
 from PyQt6.QtWidgets import QWidget, QVBoxLayout, QPushButton
+from matplotlib.backends.backend_qtagg import FigureCanvasQTAgg
+import matplotlib.pyplot as plt
 import pyqtgraph as pg
 from myImage import imageContainer
 import cv2
@@ -9,20 +11,24 @@ class Histogram(QWidget):
         super().__init__()
         self.btn_back = QPushButton("Back ( CNTRL+Z )")
         self.hist = img.getHistogram()
-        self.plot = pg.PlotWidget()
-        self.plot.setLabel('left', 'Pixel Count')
-        self.plot.setLabel('bottom', 'Pixel Value')
-    
+
+        self.fig, self.ax = plt.subplots(figsize=(10,10))
+        self.ax.plot(self.hist,color='red')
+        self.ax.set_title('Histogram')
+        self.ax.set_xlabel('Value')
+        self.ax.set_ylabel('Number of Pixels')
+
+        self.canvas = FigureCanvasQTAgg(self.fig)
+        
         layout = QVBoxLayout(self)
         layout.addStretch()
-        layout.addWidget(self.plot)
+        layout.addWidget(self.canvas)
         layout.addWidget(self.btn_back)
-        
-        self.update_histogram(img)
 
     def update_histogram(self, img : imageContainer):
+        self.ax.clear()
         self.hist = img.getHistogram()
-        self.plot.clear()
-        self.plot.plot(self.hist)
+        self.ax.plot(self.hist, color='red')
+        self.canvas.draw()
 
     
