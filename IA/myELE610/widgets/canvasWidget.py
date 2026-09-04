@@ -1,4 +1,4 @@
-from PyQt6.QtWidgets import QWidget, QVBoxLayout, QPushButton
+from PyQt6.QtWidgets import QWidget, QVBoxLayout, QPushButton, QHBoxLayout
 from PyQt6.QtGui import QPainter, QPixmap
 from PyQt6.QtCore import Qt
 from .imageWidget import Image 

@@ -57,6 +57,18 @@ class MainWindow(QMainWindow):
         self.img.convertToGrayscale()
         self.canvas.update_image(self.img.getPixmap(self.img.getQimage()))
 
+    def convert_to_edges(self):
+        self.img.convertToEdges()
+        self.canvas.update_image(self.img.getPixmap(self.img.getQimage()))
+
+    def convert_to_binary(self):
+        self.img.convertToBinary()
+        self.canvas.update_image(self.img.getPixmap(self.img.getQimage()))
+
+    def show_hough_lines(self):
+        self.img.showHoughLines()
+        self.canvas.update_image(self.img.getPixmap(self.img.getQimage()))
+
     def show_histogram(self):
         pass
 

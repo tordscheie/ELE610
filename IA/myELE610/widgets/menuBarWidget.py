@@ -23,14 +23,23 @@ def MenuBar(self: QMainWindow):
     grayscale_action = QAction("Show Grayscale", self)
     grayscale_action.triggered.connect(self.convert_to_grayscale)
 
-    histogram_action = QAction("Show Histogram", self)
-    histogram_action.triggered.connect(self.show_histogram)
+    edge_action = QAction("Sobel Edges", self)
+    edge_action.triggered.connect(self.convert_to_edges)
+
+    binary_action = QAction("Convert to Binary", self)
+    binary_action.triggered.connect(self.convert_to_binary)
+
+    hough_action = QAction("Show Hough Lines", self)
+    hough_action.triggered.connect(self.show_hough_lines)
 
     file_menu.addAction(open_action)
     file_menu.addAction(exit_action)
 
     info_menu.addAction(print_action)
     info_menu.addAction(grayscale_action)
+    info_menu.addAction(edge_action)
+    info_menu.addAction(binary_action)
+    info_menu.addAction(hough_action)
     info_menu.addAction(reset_action)
 
 if __name__ == '__main__':
