@@ -2,11 +2,11 @@ from PyQt6.QtGui import QAction
 from PyQt6.QtWidgets import QMainWindow
 
 
-
 def MenuBar(self: QMainWindow):
     menu_bar = self.menuBar()
     file_menu = menu_bar.addMenu("File")
     info_menu = menu_bar.addMenu("Image")
+    camera_menu = menu_bar.addMenu("Camera")
 
     open_action = QAction("Open", self)
     open_action.triggered.connect(self.open_image)
@@ -32,6 +32,15 @@ def MenuBar(self: QMainWindow):
     hough_action = QAction("Show Hough Lines", self)
     hough_action.triggered.connect(self.show_hough_lines)
 
+    open_camera = QAction("Open Camera", self)
+    open_camera.triggered.connect(self.open_camera)
+
+    print_camera_info = QAction("Print image info", self)
+    print_camera_info.triggered.connect(self.print_camera_info)
+
+    take_picture = QAction("Take picture", self)
+    take_picture.triggered.connect(self.take_picture)
+
     file_menu.addAction(open_action)
     file_menu.addAction(exit_action)
 
@@ -42,5 +51,10 @@ def MenuBar(self: QMainWindow):
     info_menu.addAction(hough_action)
     info_menu.addAction(reset_action)
 
-if __name__ == '__main__':
+    camera_menu.addAction(open_camera)
+    camera_menu.addAction(print_camera_info)
+    camera_menu.addAction(take_picture)
+
+
+if __name__ == "__main__":
     pass

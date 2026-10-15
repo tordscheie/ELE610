@@ -1,50 +1,66 @@
 import sys
-## QT imports
-from PyQt6.QtGui import QAction, QPixmap, QImage
-from PyQt6.QtCore import Qt
-from PyQt6.QtWidgets import QMainWindow, QApplication, QFileDialog, QLabel, QStackedWidget, QVBoxLayout
-
-# From my own
-from myImage import imageContainer
-from widgets import Canvas, Histogram, Image, MenuBar
+from time import sleep
 
 # CV
 import cv2
+from PyQt6.QtCore import Qt
+
+## QT imports
+from PyQt6.QtGui import QAction, QImage, QPixmap
+from PyQt6.QtWidgets import (
+    QApplication,
+    QFileDialog,
+    QLabel,
+    QMainWindow,
+    QStackedWidget,
+    QVBoxLayout,
+)
+from pyueye import ueye
+
+from myImage import imageContainer
+
+# From my own
+from pyueye_example_camera import Camera
+from pyueye_example_utils import uEyeException
+from widgets import Canvas, Histogram, Image, MenuBar
+
 
 class MainWindow(QMainWindow):
     def __init__(self):
         super().__init__()
         self.setWindowTitle("ELE610 App")
-        self.resize(800,600)
+        self.resize(800, 600)
 
         MenuBar(self)
         # INIT Image
         self.img = imageContainer()
-
+        self.camOn = False
+        self.cam = Camera()
         self.canvas = Canvas()
+
         self.canvas.update_image(self.img.getPixmap(self.img.getQimage()))
         self.histogram = Histogram(self.img)
-
         self.stack = QStackedWidget()
         self.stack.addWidget(self.canvas)
         self.stack.addWidget(self.histogram)
-
         self.setCentralWidget(self.stack)
 
-        self.canvas.btn_hist.clicked.connect(lambda: (self.stack.setCurrentWidget(self.histogram), self.histogram.update_histogram(self.img)))
-        self.canvas.btn_hist.setShortcut("Meta+H") 
+        self.canvas.btn_hist.clicked.connect(
+            lambda: (
+                self.stack.setCurrentWidget(self.histogram),
+                self.histogram.update_histogram(self.img),
+            )
+        )
+        self.canvas.btn_hist.setShortcut("Meta+H")
 
-        self.histogram.btn_back.clicked.connect(lambda: self.stack.setCurrentWidget(self.canvas))
+        self.histogram.btn_back.clicked.connect(
+            lambda: self.stack.setCurrentWidget(self.canvas)
+        )
         self.histogram.btn_back.setShortcut("Meta+Z")
 
-       
-        
     def open_image(self):
-        file_name, _ = QFileDialog.getOpenFileName (
-            self, 
-            "Open Image",
-            "",
-            "Images (*.png *.jpg *.jpeg)"
+        file_name, _ = QFileDialog.getOpenFileName(
+            self, "Open Image", "", "Images (*.png *.jpg *.jpeg)"
         )
         if file_name:
             self.img = imageContainer(file_name=file_name)
@@ -69,12 +85,39 @@ class MainWindow(QMainWindow):
         self.img.showHoughLines()
         self.canvas.update_image(self.img.getPixmap(self.img.getQimage()))
 
+    def open_camera(self):
+        try:
+            self.camOn = True
+            print(f"cameraOn() Camera started ok")
+        except uEyeException as e:
+            print(f"cameraOn() Caught camera error: {e}")
+            print(
+                "  Typically gives error 212 when camera is not connected (not present)"
+            )
+            self.camOn = False
+        #
+
+    def print_camera_info(self):
+        self.cam.printInfo()
+
+    def take_picture(self):
+        img = self.cam.takePicture()
+        for i in range(25):
+            img = self.cam.takePicture()
+        self.img.cv2image = img
+        self.canvas.update_image(self.img.getPixmap(self.img.getQimage()))
+
     def show_histogram(self):
         pass
 
     def reset(self):
         self.img.reset()
         self.canvas.update_image(self.img.getPixmap(self.img.getQimage()))
+
+    def closeEvent(self, event):
+        # Ensure smooth shutdown so Python or the SDK daemon doesn't crash on exit
+        event.accept()
+
 
 def startup():
     app = QApplication(sys.argv)
@@ -83,5 +126,5 @@ def startup():
     sys.exit(app.exec())
 
 
-if __name__ =='__main__':
+if __name__ == "__main__":
     startup()
