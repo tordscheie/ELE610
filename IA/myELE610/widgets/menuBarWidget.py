@@ -7,6 +7,7 @@ def MenuBar(self: QMainWindow):
     file_menu = menu_bar.addMenu("File")
     info_menu = menu_bar.addMenu("Image")
     camera_menu = menu_bar.addMenu("Camera")
+    dice_menu = menu_bar.addMenu("Dice")
 
     open_action = QAction("Open", self)
     open_action.triggered.connect(self.open_image)
@@ -41,6 +42,17 @@ def MenuBar(self: QMainWindow):
     take_picture = QAction("Take picture", self)
     take_picture.triggered.connect(self.take_picture)
 
+    find_dots = QAction("Find Dots", self)
+    find_dots.triggered.connect(self.find_dots)
+
+    take_picture = QAction("Take picture", self)
+    take_picture.triggered.connect(self.take_picture)
+
+    start_video = QAction("start_video", self)
+    start_video.triggered.connect(self.start_video)
+
+    stop_video = QAction("Stop Video", self)
+    stop_video.triggered.connect(self.stop_video)
     file_menu.addAction(open_action)
     file_menu.addAction(exit_action)
 
@@ -54,6 +66,10 @@ def MenuBar(self: QMainWindow):
     camera_menu.addAction(open_camera)
     camera_menu.addAction(print_camera_info)
     camera_menu.addAction(take_picture)
+    camera_menu.addAction(start_video)
+    camera_menu.addAction(stop_video)
+
+    dice_menu.addAction(find_dots)
 
 
 if __name__ == "__main__":

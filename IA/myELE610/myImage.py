@@ -6,8 +6,9 @@ from PyQt6.QtGui import QImage, QPixmap
 
 
 class imageContainer:
-    def __init__(self, file_name="./pictures/demo.jpg"):
+    def __init__(self, file_name="./last_image.jpg"):
         self.filename = file_name
+        self.original = cv2.imread(file_name)
         self.cv2image = cv2.imread(file_name)
 
     def getPixmap(self, qimage: QImage):
@@ -81,6 +82,27 @@ class imageContainer:
 
         self.cv2image = thresh
 
+    def find_dots(self):
+        temp = cv2.cvtColor(self.cv2image, cv2.COLOR_BGR2GRAY)
+        circles = cv2.HoughCircles(
+            cv2.GaussianBlur(temp, (3, 3), 0),
+            cv2.HOUGH_GRADIENT,
+            dp=1,
+            minDist=25,
+            param1=70,
+            param2=15,
+            minRadius=5,
+            maxRadius=35,
+        )
+        if circles is not None:
+            # Convert circle coordinates and radii to rounded integers
+            circles = np.uint16(np.around(circles))
+            for i in circles[0, :]:
+                # Draw the outer circle (green)
+                cv2.circle(self.cv2image, (i[0], i[1]), i[2], (0, 255, 0), 2)
+                # Draw the center of the circle (red dot)
+                cv2.circle(self.cv2image, (i[0], i[1]), 2, (0, 255, 0), 3)
+
     def showHoughLines(self):
 
         if self.cv2image is None:
@@ -126,4 +148,3 @@ def RGB2GRAY(image: np.ndarray):
 
 if __name__ == "__main__":
     pass
-

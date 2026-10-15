@@ -22,6 +22,7 @@ from myImage import imageContainer
 # From my own
 from pyueye_example_camera import Camera
 from pyueye_example_utils import uEyeException
+from video import CameraWorker
 from widgets import Canvas, Histogram, Image, MenuBar
 
 
@@ -30,6 +31,7 @@ class MainWindow(QMainWindow):
         super().__init__()
         self.setWindowTitle("ELE610 App")
         self.resize(800, 600)
+        self.videoworker = None
 
         MenuBar(self)
         # INIT Image
@@ -107,6 +109,25 @@ class MainWindow(QMainWindow):
         self.img.cv2image = img
         self.canvas.update_image(self.img.getPixmap(self.img.getQimage()))
 
+    def start_video(self):
+        if self.videoworker is None or not self.videoworker.isRunning():
+            self.videoworker = CameraWorker(self.cam)
+            self.videoworker.frame_received.connect(self.video)
+            self.videoworker.start()
+
+    def video(self, cv_img):
+        self.img.cv2image = cv_img
+        self.canvas.update_image(self.img.getPixmap(self.img.getQimage()))
+
+    def stop_video(self):
+        if self.videoworker or self.videoworker.isRunning():
+            self.videoworker.stop()
+            self.videoworker = None
+
+    def find_dots(self):
+        self.img.find_dots()
+        self.canvas.update_image(self.img.getPixmap(self.img.getQimage()))
+
     def show_histogram(self):
         pass
 
@@ -116,6 +137,7 @@ class MainWindow(QMainWindow):
 
     def closeEvent(self, event):
         # Ensure smooth shutdown so Python or the SDK daemon doesn't crash on exit
+        cv2.imwrite("last_image.jpg", self.img.original)
         event.accept()
 
 

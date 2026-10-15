@@ -145,14 +145,26 @@ class Camera:
         return img
 
     def takePicture(self):
-        print(f"getOneImage() try to capture one image")
-
         ueye.is_StopLiveVideo(self.h_cam, ueye.IS_FORCE_VIDEO_STOP)
         retVal = ueye.is_FreezeVideo(self.h_cam, ueye.IS_WAIT)
         if retVal == ueye.IS_SUCCESS:
             print(retVal)
 
         return self.getcv2image()
+
+    def startLiveVideo(self):
+        """Starts the continuous live video stream mode."""
+        # IS_DONT_WAIT tells the camera to start streaming instantly in the background
+        retVal = ueye.is_CaptureVideo(self.h_cam, ueye.IS_DONT_WAIT)
+        if retVal == ueye.IS_SUCCESS:
+            print("Live video stream started successfully.")
+        else:
+            print(f"Failed to start live video. Error code: {retVal}")
+
+    def stopLiveVideo(self):
+        """Stops the live video stream."""
+        ueye.is_StopLiveVideo(self.h_cam, ueye.IS_FORCE_VIDEO_STOP)
+        print("Live video stream stopped.")
 
 
 if __name__ == "__main__":
